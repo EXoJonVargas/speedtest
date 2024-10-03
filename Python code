@@ -1,21 +1,130 @@
 import speedtest
 
-def speed_test(ip_address=None):
-    st = speedtest.Speedtest()
-    
-    # If an IP address is provided, set the server to that IP
-    if ip_address:
-        st.get_best_server()
-        st.get_best_server(ip_address)
-    
-    print("Testing download speed...")
-    download_speed = st.download() / 1_000_000  # Convert to Mbps
-    print("Testing upload speed...")
-    upload_speed = st.upload() / 1_000_000  # Convert to Mbps
-    
-    print(f"Download Speed: {download_speed:.2f} Mbps")
-    print(f"Upload Speed: {upload_speed:.2f} Mbps")
+class InternetSpeedTest:
+    """
+    A class to perform an internet speed test using the Speedtest.net API.
+    This class allows users to check their download and upload speeds as well
+    as ping to a server based on their IP address.
+
+    Attributes:
+    - speed_test (Speedtest): An instance of the Speedtest class to perform speed tests.
+    """
+
+    def __init__(self):
+        """
+        Initializes the InternetSpeedTest class.
+
+        This constructor creates an instance of the Speedtest class which will be used
+        to perform the speed tests. It does not take any parameters and does not return
+        any values.
+        """
+        self.speed_test = speedtest.Speedtest()  # Create an instance of Speedtest
+
+    def get_best_server(self):
+        """
+        Finds the best server based on ping.
+
+        This method retrieves a list of available servers and selects the one with the
+        lowest ping. It does not take any parameters.
+
+        Returns:
+        dict: A dictionary containing the best server's details, including its ID,
+              name, location, and ping.
+
+        Raises:
+        Exception: If no servers are available or if there is an issue retrieving server data.
+        """
+        try:
+            # Retrieve a list of servers and get the best one based on ping
+            servers = self.speed_test.get_best_server()
+            return servers  # Return the best server details
+        except Exception as e:
+            raise Exception(f"An error occurred while retrieving the best server: {e}")
+
+    def test_download_speed(self):
+        """
+        Tests the download speed of the internet connection.
+
+        This method performs a download speed test and returns the result in Mbps.
+
+        Returns:
+        float: The download speed in Megabits per second (Mbps).
+
+        Raises:
+        Exception: If the download speed test fails.
+        """
+        try:
+            # Perform the download speed test and return the result in Mbps
+            download_speed = self.speed_test.download() / 1_000_000  # Convert to Mbps
+            return download_speed  # Return the download speed
+        except Exception as e:
+            raise Exception(f"An error occurred while testing download speed: {e}")
+
+    def test_upload_speed(self):
+        """
+        Tests the upload speed of the internet connection.
+
+        This method performs an upload speed test and returns the result in Mbps.
+
+        Returns:
+        float: The upload speed in Megabits per second (Mbps).
+
+        Raises:
+        Exception: If the upload speed test fails.
+        """
+        try:
+            # Perform the upload speed test and return the result in Mbps
+            upload_speed = self.speed_test.upload() / 1_000_000  # Convert to Mbps
+            return upload_speed  # Return the upload speed
+        except Exception as e:
+            raise Exception(f"An error occurred while testing upload speed: {e}")
+
+    def test_ping(self):
+        """
+        Tests the ping to the best server.
+
+        This method retrieves the ping value to the best server found.
+
+        Returns:
+        float: The ping in milliseconds (ms).
+
+        Raises:
+        Exception: If the ping test fails.
+        """
+        try:
+            # Retrieve the ping value to the best server
+            ping_value = self.speed_test.results.ping
+            return ping_value  # Return the ping value
+        except Exception as e:
+            raise Exception(f"An error occurred while testing ping: {e}")
+
+# Example usage of the InternetSpeedTest class:
 
 if __name__ == "__main__":
-    # Replace '8.8.8.8' with the desired IP address for testing
-    speed_test('8.8.8.8')
+    # Create an instance of the InternetSpeedTest class
+    speed_test = InternetSpeedTest()
+
+    # Get the best server
+    best_server = speed_test.get_best_server()
+    print(f"Best server: {best_server['name']} located in {best_server['country']} with a ping of {best_server['ping']} ms.")
+
+    # Test download speed
+    try:
+        download_speed = speed_test.test_download_speed()
+        print(f"Download speed: {download_speed:.2f} Mbps")
+    except Exception as e:
+        print(e)
+
+    # Test upload speed
+    try:
+        upload_speed = speed_test.test_upload_speed()
+        print(f"Upload speed: {upload_speed:.2f} Mbps")
+    except Exception as e:
+        print(e)
+
+    # Test ping
+    try:
+        ping = speed_test.test_ping()
+        print(f"Ping: {ping:.2f} ms")
+    except Exception as e:
+        print(e)
