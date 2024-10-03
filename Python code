@@ -1,0 +1,21 @@
+import speedtest
+
+def speed_test(ip_address=None):
+    st = speedtest.Speedtest()
+    
+    # If an IP address is provided, set the server to that IP
+    if ip_address:
+        st.get_best_server()
+        st.get_best_server(ip_address)
+    
+    print("Testing download speed...")
+    download_speed = st.download() / 1_000_000  # Convert to Mbps
+    print("Testing upload speed...")
+    upload_speed = st.upload() / 1_000_000  # Convert to Mbps
+    
+    print(f"Download Speed: {download_speed:.2f} Mbps")
+    print(f"Upload Speed: {upload_speed:.2f} Mbps")
+
+if __name__ == "__main__":
+    # Replace '8.8.8.8' with the desired IP address for testing
+    speed_test('8.8.8.8')
